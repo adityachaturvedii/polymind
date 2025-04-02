@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "polymind_mcp": {
+      "command": "python",
+      "args": ["-m", "src.mcp.server"],
+      "env": {
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
