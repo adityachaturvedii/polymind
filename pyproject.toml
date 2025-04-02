@@ -48,8 +48,8 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/polymind"
-"Bug Tracker" = "https://github.com/yourusername/polymind/issues"
+"Homepage" = "https://github.com/adityachaturvedii/polymind"
+"Bug Tracker" = "https://github.com/adityachaturvedii/polymind/issues"
 
 [tool.setuptools]
 packages = ["src"]

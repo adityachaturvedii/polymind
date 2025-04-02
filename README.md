@@ -68,7 +68,7 @@ The system integrates with Anthropic's Model Context Protocol to provide custom 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/polymind.git
+git clone https://github.com/adityachaturvedii/polymind.git
 cd polymind
 ```
 
