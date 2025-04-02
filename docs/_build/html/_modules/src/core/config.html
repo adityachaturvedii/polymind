@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.core.config &mdash; PolyMind 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PolyMind
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PolyMind</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.core.config</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.core.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Configuration module for the AI Agent System.</span>
+
+<span class="sd">This module handles loading and managing configuration settings for the entire system,</span>
+<span class="sd">including agent settings, memory configuration, and API credentials.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pydantic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="c1"># Load environment variables from .env file</span>
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="MemoryConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.MemoryConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MemoryConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the memory system.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Short-term memory settings</span>
+    <span class="n">conversation_buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">working_memory_capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">decay_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span>
+
+    <span class="c1"># Long-term memory settings</span>
+    <span class="n">episodic_importance_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="n">semantic_update_frequency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;daily&quot;</span>
+    <span class="n">procedural_versioning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Vector database settings</span>
+    <span class="n">vector_db</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chroma&quot;</span>
+    <span class="n">embedding_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all-mpnet-base-v2&quot;</span>
+    <span class="n">vector_db_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data/embeddings&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Knowledge graph settings</span>
+    <span class="n">knowledge_graph_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">knowledge_graph_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="AgentConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.AgentConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AgentConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for individual agents.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Context window sizes for each agent role</span>
+    <span class="n">context_window_sizes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;team_leader&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+        <span class="s2">&quot;product_manager&quot;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+        <span class="s2">&quot;ml_architect&quot;</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span>
+        <span class="s2">&quot;sw_architect&quot;</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span>
+        <span class="s2">&quot;ml_engineer&quot;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+        <span class="s2">&quot;sw_engineer&quot;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+        <span class="s2">&quot;data_engineer&quot;</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
+        <span class="s2">&quot;qa_engineer&quot;</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Summary levels for hierarchical summarization</span>
+    <span class="n">summary_levels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># Agent-specific settings</span>
+    <span class="n">temperature</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;team_leader&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="s2">&quot;product_manager&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="s2">&quot;ml_architect&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;sw_architect&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;ml_engineer&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+        <span class="s2">&quot;sw_engineer&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+        <span class="s2">&quot;data_engineer&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+        <span class="s2">&quot;qa_engineer&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Model versions for each agent - using Claude 3.5 Sonnet</span>
+    <span class="n">model_versions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;team_leader&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;product_manager&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ml_architect&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sw_architect&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ml_engineer&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sw_engineer&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_engineer&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qa_engineer&quot;</span><span class="p">:</span> <span class="s2">&quot;claude-3-5-sonnet&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="RAGConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.RAGConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RAGConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the RAG system.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Retrieval settings</span>
+    <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">similarity_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="n">reranking_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Knowledge sources</span>
+    <span class="n">knowledge_base_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data/knowledge&quot;</span><span class="p">)</span>
+    <span class="n">external_sources_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">external_sources</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+
+<div class="viewcode-block" id="DomainConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.DomainConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DomainConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for domain-specific components.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Computer Vision settings</span>
+    <span class="n">cv_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cv_models_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cv_default_image_size</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+
+    <span class="c1"># NLP settings</span>
+    <span class="n">nlp_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">nlp_models_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nlp_max_sequence_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span>
+
+    <span class="c1"># Tabular data settings</span>
+    <span class="n">tabular_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">tabular_models_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tabular_default_metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;roc_auc&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="APIConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.APIConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">APIConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for API connections.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Anthropic API settings</span>
+    <span class="n">anthropic_api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">anthropic_api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://api.anthropic.com&quot;</span>
+
+    <span class="c1"># Other potential API settings</span>
+    <span class="n">openai_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">)</span>
+    <span class="n">huggingface_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;HUGGINGFACE_API_KEY&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MCPConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.MCPConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MCPConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for MCP server.&quot;&quot;&quot;</span>
+
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">server_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;polymind_mcp&quot;</span>
+    <span class="n">server_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+    <span class="n">tools_enabled</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;analyze_requirements&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;design_ml_architecture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;design_software_architecture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;implement_ml_component&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;implement_code_component&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;design_data_pipeline&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;test_solution&quot;</span><span class="p">,</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="SystemConfig">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.SystemConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SystemConfig</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main system configuration.&quot;&quot;&quot;</span>
+
+    <span class="c1"># General settings</span>
+    <span class="n">project_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;polymind&quot;</span>
+    <span class="n">debug_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">log_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span>
+    <span class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Component configurations</span>
+    <span class="n">memory</span><span class="p">:</span> <span class="n">MemoryConfig</span> <span class="o">=</span> <span class="n">MemoryConfig</span><span class="p">()</span>
+    <span class="n">agents</span><span class="p">:</span> <span class="n">AgentConfig</span> <span class="o">=</span> <span class="n">AgentConfig</span><span class="p">()</span>
+    <span class="n">rag</span><span class="p">:</span> <span class="n">RAGConfig</span> <span class="o">=</span> <span class="n">RAGConfig</span><span class="p">()</span>
+    <span class="n">domains</span><span class="p">:</span> <span class="n">DomainConfig</span> <span class="o">=</span> <span class="n">DomainConfig</span><span class="p">()</span>
+    <span class="n">api</span><span class="p">:</span> <span class="n">APIConfig</span> <span class="o">=</span> <span class="n">APIConfig</span><span class="p">()</span>
+    <span class="n">mcp</span><span class="p">:</span> <span class="n">MCPConfig</span> <span class="o">=</span> <span class="n">MCPConfig</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SystemConfig.from_file">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.SystemConfig.from_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;SystemConfig&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load configuration from a file.&quot;&quot;&quot;</span>
+        <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Config file not found: </span><span class="si">{</span><span class="n">config_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">config_data</span> <span class="o">=</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_file_as</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">config_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">config_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SystemConfig.save_to_file">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.SystemConfig.save_to_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save configuration to a file.&quot;&quot;&quot;</span>
+        <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+        <span class="n">config_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># Default configuration instance</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">SystemConfig</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="load_config">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.load_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_config</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SystemConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load the system configuration.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config_path: Path to the configuration file. If None, uses default settings.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SystemConfig: The loaded configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">config_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">config</span>
+
+    <span class="k">return</span> <span class="n">SystemConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_config">
+<a class="viewcode-back" href="../../../src.core.html#src.core.config.get_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SystemConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the current system configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SystemConfig: The current configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aditya Chaturvedi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

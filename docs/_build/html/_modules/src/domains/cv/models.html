@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.domains.cv.models &mdash; PolyMind 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            PolyMind
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">PolyMind</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.domains.cv.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.domains.cv.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Computer Vision models module for the AI Agent System.</span>
+
+<span class="sd">This module provides model implementations and utilities for computer vision tasks.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">transforms</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CVModelFactory">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.CVModelFactory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CVModelFactory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class for creating computer vision models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CVModelFactory.create_model">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.CVModelFactory.create_model">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_model</span><span class="p">(</span>
+        <span class="n">model_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a computer vision model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_type: Type of model to create</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nn.Module: The created model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;resnet18&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_resnet</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;resnet34&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_resnet</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;resnet50&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_resnet</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;resnet101&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_resnet</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;efficientnet_b0&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_efficientnet</span><span class="p">(</span><span class="s2">&quot;b0&quot;</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;efficientnet_b1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_efficientnet</span><span class="p">(</span><span class="s2">&quot;b1&quot;</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;efficientnet_b2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_efficientnet</span><span class="p">(</span><span class="s2">&quot;b2&quot;</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;mobilenet_v2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_mobilenet_v2</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;custom_cnn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CVModelFactory</span><span class="o">.</span><span class="n">_create_custom_cnn</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_resnet</span><span class="p">(</span>
+        <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a ResNet model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            depth: Depth of the ResNet (18, 34, 50, 101)</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nn.Module: The created ResNet model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">34</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet50</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">101</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet101</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported ResNet depth: </span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Modify the final layer for the number of classes</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fc</span><span class="o">.</span><span class="n">in_features</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">model</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_efficientnet</span><span class="p">(</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an EfficientNet model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            version: Version of EfficientNet (b0, b1, b2, etc.)</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nn.Module: The created EfficientNet model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s2">&quot;b0&quot;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">efficientnet_b0</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s2">&quot;b1&quot;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">efficientnet_b1</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s2">&quot;b2&quot;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">efficientnet_b2</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported EfficientNet version: </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Modify the classifier for the number of classes</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">in_features</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">model</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_mobilenet_v2</span><span class="p">(</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a MobileNetV2 model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nn.Module: The created MobileNetV2 model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">mobilenet_v2</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s2">&quot;IMAGENET1K_V1&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        
+        <span class="c1"># Modify the classifier for the number of classes</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">in_features</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">model</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_custom_cnn</span><span class="p">(</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">input_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a custom CNN model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            input_channels: Number of input channels</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nn.Module: The created custom CNN model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CustomCNN</span><span class="p">(</span><span class="n">input_channels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CustomCNN">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.CustomCNN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomCNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom CNN model for computer vision tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CustomCNN.__init__">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.CustomCNN.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">hidden_channels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the CustomCNN model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_channels: Number of input channels</span>
+<span class="sd">            num_classes: Number of output classes</span>
+<span class="sd">            hidden_channels: List of hidden channel dimensions</span>
+<span class="sd">            dropout_rate: Dropout rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="c1"># Create convolutional layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        
+        <span class="c1"># First convolutional layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">input_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Additional convolutional layers</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hidden_channels</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Adaptive pooling to handle variable input sizes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive_pool</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        
+        <span class="c1"># Fully connected layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">512</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_rate</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CustomCNN.forward">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.CustomCNN.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward pass of the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Output tensor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Pass through convolutional layers</span>
+        <span class="k">for</span> <span class="n">conv_layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">conv_layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># Adaptive pooling</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adaptive_pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># Fully connected layers</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ObjectDetectionModel">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.ObjectDetectionModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ObjectDetectionModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object detection model based on Faster R-CNN.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ObjectDetectionModel.__init__">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.ObjectDetectionModel.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the ObjectDetectionModel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_classes: Number of object classes (including background)</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="c1"># Load Faster R-CNN model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">fasterrcnn_resnet50_fpn</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;DEFAULT&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Replace the classifier with a new one for the specified number of classes</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi_heads</span><span class="o">.</span><span class="n">box_predictor</span><span class="o">.</span><span class="n">cls_score</span><span class="o">.</span><span class="n">in_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi_heads</span><span class="o">.</span><span class="n">box_predictor</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">faster_rcnn</span><span class="o">.</span><span class="n">FastRCNNPredictor</span><span class="p">(</span>
+            <span class="n">in_features</span><span class="p">,</span> <span class="n">num_classes</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ObjectDetectionModel.forward">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.ObjectDetectionModel.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward pass of the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: List of input tensors</span>
+<span class="sd">            targets: Optional list of target dictionaries</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[Dict[str, torch.Tensor], List[Dict[str, torch.Tensor]]]: Model output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SegmentationModel">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.SegmentationModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SegmentationModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Segmentation model based on DeepLabV3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SegmentationModel.__init__">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.SegmentationModel.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the SegmentationModel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_classes: Number of segmentation classes</span>
+<span class="sd">            pretrained: Whether to use pretrained weights</span>
+<span class="sd">            **kwargs: Additional model-specific parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="c1"># Load DeepLabV3 model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">deeplabv3_resnet50</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;DEFAULT&quot;</span> <span class="k">if</span> <span class="n">pretrained</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Replace the classifier with a new one for the specified number of classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+            <span class="mi">256</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SegmentationModel.forward">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.SegmentationModel.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward pass of the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, torch.Tensor]: Model output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_cv_transforms">
+<a class="viewcode-back" href="../../../../src.domains.cv.html#src.domains.cv.models.get_cv_transforms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cv_transforms</span><span class="p">(</span>
+    <span class="n">task_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span>
+    <span class="n">input_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="n">augmentation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get standard transforms for computer vision tasks.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_type: Type of CV task (classification, detection, segmentation)</span>
+<span class="sd">        input_size: Input image size (height, width)</span>
+<span class="sd">        augmentation: Whether to include data augmentation</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, transforms.Compose]: Dictionary of transforms for train and val</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Basic normalization for ImageNet pretrained models</span>
+    <span class="n">normalize</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span>
+        <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span>
+        <span class="n">std</span><span class="o">=</span><span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Validation transforms (no augmentation)</span>
+    <span class="n">val_transforms</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="n">input_size</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+        <span class="n">normalize</span><span class="p">,</span>
+    <span class="p">])</span>
+    
+    <span class="c1"># Training transforms</span>
+    <span class="k">if</span> <span class="n">augmentation</span><span class="p">:</span>
+        <span class="n">train_transforms</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="n">input_size</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="n">brightness</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">contrast</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+            <span class="n">normalize</span><span class="p">,</span>
+        <span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">train_transforms</span> <span class="o">=</span> <span class="n">val_transforms</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="n">train_transforms</span><span class="p">,</span>
+        <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="n">val_transforms</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aditya Chaturvedi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

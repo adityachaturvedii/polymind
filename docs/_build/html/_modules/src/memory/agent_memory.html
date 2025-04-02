@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.memory.agent_memory &mdash; PolyMind 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PolyMind
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PolyMind</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.memory.agent_memory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.memory.agent_memory</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Agent Memory module for the AI Agent System.</span>
+
+<span class="sd">This module implements the agent-specific memory component that manages</span>
+<span class="sd">context for each agent role.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.core.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryConfig</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AgentMemory">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AgentMemory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Agent-specific Memory for the AI Agent System.</span>
+
+<span class="sd">    The AgentMemory handles:</span>
+<span class="sd">    - Agent states: Internal state of each agent</span>
+<span class="sd">    - Agent context windows: Context for each agent role</span>
+<span class="sd">    - Agent work summaries: Compact representation of agent outputs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AgentMemory.__init__">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">MemoryConfig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the AgentMemory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Memory system configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        
+        <span class="c1"># Initialize agent states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># Initialize agent context windows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># Initialize agent work summaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Agent Memory initialized&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.update">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update memory for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">            data: The data to store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize agent memory if not present</span>
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Update agent state</span>
+        <span class="k">if</span> <span class="s2">&quot;state&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_agent_state</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
+        
+        <span class="c1"># Update agent context</span>
+        <span class="k">if</span> <span class="s2">&quot;context&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_agent_context</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">])</span>
+        
+        <span class="c1"># Update agent work summary</span>
+        <span class="k">if</span> <span class="s2">&quot;summary&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_agent_summary</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">])</span>
+        
+        <span class="c1"># Update other agent-specific data</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;context&quot;</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">[</span><span class="n">agent_id</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_agent_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the state for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">            state: The state to store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated state for agent </span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_agent_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the context for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">            context: The context to store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get context window size for the agent</span>
+        <span class="n">context_window_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">context_window_sizes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">agent_id</span><span class="p">,</span> <span class="mi">6000</span>  <span class="c1"># Default size if not specified</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Add new context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        
+        <span class="c1"># Prune context if it exceeds the window size</span>
+        <span class="c1"># In a real implementation, this would use token counting and more sophisticated pruning</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">[</span><span class="n">agent_id</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">context_window_size</span> <span class="o">//</span> <span class="mi">100</span><span class="p">:</span>  <span class="c1"># Rough approximation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pruned context for agent </span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_agent_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">summary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the work summary for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">            summary: The summary to store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Add new summary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+        
+        <span class="c1"># Keep only the most recent summaries</span>
+        <span class="n">max_summaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">summary_levels</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent_id</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">max_summaries</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pruned summary for agent </span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the state for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: The agent state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="p">{})</span>
+
+<div class="viewcode-block" id="AgentMemory.get_context">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.get_context">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the context for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Dict[str, Any]]: The agent context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.get_summaries">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.get_summaries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the work summaries for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Dict[str, Any]]: The agent work summaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.get_all_agent_data">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.get_all_agent_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_agent_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all data for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: All agent data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span>
+            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span>
+            <span class="s2">&quot;summaries&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_summaries</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.clear_agent">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.clear_agent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear memory for a specific agent.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">agent_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">[</span><span class="n">agent_id</span><span class="p">]</span>
+            
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleared memory for agent </span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.clear_all_agents">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.clear_all_agents">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_all_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear memory for all agents.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleared memory for all agents&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.get_state">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.get_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the current state of agent memory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: The current state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;agent_states&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span><span class="p">,</span>
+            <span class="s2">&quot;agent_contexts&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span><span class="p">,</span>
+            <span class="s2">&quot;agent_summaries&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.set_state">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.set_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the state of agent memory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state: The state to set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;agent_states&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_states</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;agent_states&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;agent_contexts&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_contexts</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;agent_contexts&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;agent_summaries&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent_summaries</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;agent_summaries&quot;</span><span class="p">]</span>
+            
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Agent memory state restored&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AgentMemory.create_hierarchical_summary">
+<a class="viewcode-back" href="../../../src.memory.html#src.memory.agent_memory.AgentMemory.create_hierarchical_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_hierarchical_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a hierarchical summary of agent work.</span>
+
+<span class="sd">        This method generates a summary of the agent&#39;s work at different levels</span>
+<span class="sd">        of abstraction, based on the agent&#39;s work summaries.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_id: The agent identifier</span>
+<span class="sd">            level: The summary level (0 = most detailed, higher = more abstract)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The hierarchical summary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get agent summaries</span>
+        <span class="n">summaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_summaries</span><span class="p">(</span><span class="n">agent_id</span><span class="p">)</span>
+        
+        <span class="c1"># If no summaries, return empty string</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">summaries</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        
+        <span class="c1"># If level is out of range, use the highest available level</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">summaries</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">summaries</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        
+        <span class="c1"># Get summary at the specified level</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="n">summaries</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+        
+        <span class="c1"># In a real implementation, this would generate a proper summary</span>
+        <span class="c1"># based on the agent&#39;s work and the requested level of abstraction</span>
+        
+        <span class="c1"># For now, just return a simple string representation</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aditya Chaturvedi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

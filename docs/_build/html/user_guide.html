@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Guide &mdash; PolyMind 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src" href="modules.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PolyMind
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup">Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-interface">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-mcp-server">Running the MCP Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#initializing-the-knowledge-base">Initializing the Knowledge Base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#programmatic-usage">Programmatic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mcp-example">MCP Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-key-issues">API Key Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-usage">Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mcp-server-issues">MCP Server Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PolyMind</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">User Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/user_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h1>
+<p>This guide explains how to install, configure, and use the PolyMind AI Agent System for machine learning modeling and code generation tasks.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Python 3.9+</p></li>
+<li><p>Anthropic API key</p></li>
+</ul>
+</section>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Clone the repository:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/adityachaturvedii/polymind.git
+<span class="nb">cd</span><span class="w"> </span>polymind
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create and activate a virtual environment:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Install dependencies:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Set up your Anthropic API key:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANTHROPIC_API_KEY</span><span class="o">=</span>your_api_key_here<span class="w">  </span><span class="c1"># On Windows: set ANTHROPIC_API_KEY=your_api_key_here</span>
+</pre></div>
+</div>
+<p>Alternatively, create a <cite>.env</cite> file in the project root:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ANTHROPIC_API_KEY=your_api_key_here
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>The system uses a configuration file to customize its behavior. You can generate a default configuration file using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.main<span class="w"> </span>init-config
+</pre></div>
+</div>
+<p>This will create a <cite>config/config.json</cite> file that you can edit to customize the system.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<section id="command-line-interface">
+<h3>Command Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h3>
+<p>The system provides a command-line interface for processing tasks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.main<span class="w"> </span>process<span class="w"> </span><span class="s2">&quot;Create a neural network for image classification&quot;</span>
+</pre></div>
+</div>
+<p>Additional options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.main<span class="w"> </span>process<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<section id="running-the-mcp-server">
+<h3>Running the MCP Server<a class="headerlink" href="#running-the-mcp-server" title="Link to this heading"></a></h3>
+<p>To use the MCP server for extended capabilities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.main<span class="w"> </span>run-mcp-server
+</pre></div>
+</div>
+</section>
+<section id="initializing-the-knowledge-base">
+<h3>Initializing the Knowledge Base<a class="headerlink" href="#initializing-the-knowledge-base" title="Link to this heading"></a></h3>
+<p>To initialize the knowledge base for a specific domain:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.main<span class="w"> </span>init-knowledge-base<span class="w"> </span>cv<span class="w"> </span>--source<span class="w"> </span>/path/to/documents
+</pre></div>
+</div>
+<p>Replace <cite>cv</cite> with <cite>nlp</cite>, <cite>tabular</cite>, or <cite>general</cite> for other domains.</p>
+</section>
+<section id="programmatic-usage">
+<h3>Programmatic Usage<a class="headerlink" href="#programmatic-usage" title="Link to this heading"></a></h3>
+<p>You can also use the system programmatically in your Python code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.core.coordinator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coordinator</span>
+
+<span class="c1"># Initialize coordinator</span>
+<span class="n">coordinator</span> <span class="o">=</span> <span class="n">Coordinator</span><span class="p">()</span>
+
+<span class="c1"># Process a task</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">coordinator</span><span class="o">.</span><span class="n">process_task</span><span class="p">(</span><span class="s2">&quot;Create a neural network for image classification&quot;</span><span class="p">)</span>
+
+<span class="c1"># Print result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="simple-example">
+<h3>Simple Example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.core.coordinator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coordinator</span>
+
+<span class="c1"># Initialize coordinator</span>
+<span class="n">coordinator</span> <span class="o">=</span> <span class="n">Coordinator</span><span class="p">()</span>
+
+<span class="c1"># Process a task</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">coordinator</span><span class="o">.</span><span class="n">process_task</span><span class="p">(</span><span class="s2">&quot;Create a simple neural network for image classification&quot;</span><span class="p">)</span>
+
+<span class="c1"># Print result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mcp-example">
+<h3>MCP Example<a class="headerlink" href="#mcp-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># Start MCP server</span>
+<span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;src.mcp.server&quot;</span><span class="p">],</span>
+    <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">:</span> <span class="s2">&quot;your_api_key_here&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Wait for server to start</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Use the system with MCP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.core.coordinator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coordinator</span>
+<span class="n">coordinator</span> <span class="o">=</span> <span class="n">Coordinator</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">coordinator</span><span class="o">.</span><span class="n">process_task</span><span class="p">(</span><span class="s2">&quot;Design a CNN architecture&quot;</span><span class="p">)</span>
+
+<span class="c1"># Stop MCP server</span>
+<span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="api-key-issues">
+<h3>API Key Issues<a class="headerlink" href="#api-key-issues" title="Link to this heading"></a></h3>
+<p>If you encounter API key errors, ensure your Anthropic API key is correctly set in the environment or <cite>.env</cite> file.</p>
+</section>
+<section id="memory-usage">
+<h3>Memory Usage<a class="headerlink" href="#memory-usage" title="Link to this heading"></a></h3>
+<p>The system can use significant memory for vector embeddings. If you encounter memory issues, consider:</p>
+<ul class="simple">
+<li><p>Reducing the size of the knowledge base</p></li>
+<li><p>Using a smaller embedding model</p></li>
+<li><p>Limiting the number of concurrent tasks</p></li>
+</ul>
+</section>
+<section id="mcp-server-issues">
+<h3>MCP Server Issues<a class="headerlink" href="#mcp-server-issues" title="Link to this heading"></a></h3>
+<p>If the MCP server fails to start, check:</p>
+<ul class="simple">
+<li><p>Your Anthropic API key is correctly set</p></li>
+<li><p>The MCP settings in <cite>config/mcp_settings.json</cite> are correct</p></li>
+<li><p>You have the required dependencies installed</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="src" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aditya Chaturvedi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
